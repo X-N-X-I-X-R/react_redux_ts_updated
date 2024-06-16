@@ -1,0 +1,40 @@
+body, html, #root {
+  height: 100%;
+  margin: 0; /* Remove margin to allow full width and height */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+  padding: 24px;
+  overflow: auto; /* Add overflow auto to allow scrolling if content exceeds the height */
+}
+
+/* Add CSS for Navbar and Sidebar */
+.Navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  height: 64px; /* Adjust according to the height of your Navbar */
+}
+
+.Sidebar {
+  position: fixed;
+  top: 72px; /* Adjust according to the height of your Navbar, adding extra space */
+  left: 0;
+  height: calc(100% - 72px); /* Adjust according to the height of your Navbar */
+  width: 240px; /* Adjust according to the width of your Sidebar */
+  z-index: 2;
+}
+
+/* Adjust main content to account for Navbar and Sidebar */
+.content {
+  margin-top: 72px; /* Adjust according to the height of your Navbar */
+  margin-left: 240px; /* Adjust according to the width of your Sidebar */
+  height: calc(100% - 72px);
+  padding: 24px;
+  overflow: auto;
+}
