@@ -6,6 +6,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
+import Chaticon from '@mui/icons-material/Chat';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from 'react-router-dom';
@@ -49,6 +50,12 @@ const Sidebar: React.FC = () => {
           <ListItem>
             <ListItemIcon><LoginIcon /></ListItemIcon>
             <ListItemText primary="Dashboard" />
+          </ListItem>
+        </ButtonBase>
+                <ButtonBase onClick={() => navigate('/chat')}>
+          <ListItem>
+            <ListItemIcon><Chaticon /></ListItemIcon>
+            <ListItemText primary="chat" />
           </ListItem>
         </ButtonBase>
       </List>

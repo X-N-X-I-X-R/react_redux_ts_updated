@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-
 interface Credentials {
   username: string;
   password: string;
@@ -12,11 +11,12 @@ interface RegisterData extends Credentials {
 }
 
 interface AuthState {
+  [x: string]: any;
   user: string | null;
   token: string | null;
   loading: boolean;
   error: string | null;
-    isAuthenticated: boolean;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
@@ -24,10 +24,26 @@ const initialState: AuthState = {
   token: null,
   loading: false,
   error: null,
-    isAuthenticated: false, 
+  isAuthenticated: false, 
 };
 
-const MYSERVER = 'http://localhost:8000/';
+export interface UserProfile {
+  id: number;
+  user_nickname: string;
+  user_gender: 'M' | 'F' | 'O' | '';
+  user_country: string;
+  user_phone: string | null;
+  user_birth_date: string; // Date is represented as string in JSON
+  user_register_date: string; // Date is represented as string in JSON
+  last_login: string; // Date is represented as string in JSON
+  user_bio: string | null;
+  user_website: string | null;
+  user_image_container: string;
+  user_profile_image: string;
+  active: boolean;
+}
+
+export const MYSERVER = 'http://localhost:8000/';
 
 export const login = createAsyncThunk('auth/login', async (credentials: Credentials) => {
   const response = await axios.post(`${MYSERVER}login/`, credentials);
@@ -50,14 +66,23 @@ const authSlice = createSlice({
       sessionStorage.removeItem('access_token');
       sessionStorage.removeItem('refresh_token');
     },
-        setAuthenticated: (state, action: PayloadAction<boolean>) => {
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
+    setInitialState: (state) => {
+      const token = sessionStorage.getItem('access_token');
+      const user = sessionStorage.getItem('user_nickname');
+      const user_id = sessionStorage.getItem('user_id');
+      const nickname = sessionStorage.getItem('user_nickname');
+      if (token) {
+        state.token = token;
+        state.user = user;
+        state.isAuthenticated = true;
+        state.user = nickname;
+        state.user = user_id;
+      }
+    },
   },
-
-
-
-  
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -86,11 +111,9 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to register';
       });
-
   } 
 });
 
-export const { logout } = authSlice.actions;
-export const { setAuthenticated } = authSlice.actions;
+export const { logout, setAuthenticated, setInitialState } = authSlice.actions;
 
 export default authSlice.reducer;

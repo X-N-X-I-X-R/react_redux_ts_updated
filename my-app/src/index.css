@@ -38,3 +38,33 @@ main {
   padding: 24px;
   overflow: auto;
 }
+#chat-log {
+  width: 80%;
+  height: 400px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  overflow-y: scroll;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+#chat-message-input {
+  width: 70%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+#chat-message-submit {
+  padding: 10px 20px;
+  border: none;
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#chat-message-submit:hover {
+  background-color: #218838;
+}

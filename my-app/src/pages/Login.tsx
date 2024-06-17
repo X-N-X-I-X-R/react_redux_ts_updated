@@ -45,9 +45,11 @@ const handleSubmit = (e: React.FormEvent) => {
       sessionStorage.setItem('access_token', response.payload.access);
       sessionStorage.setItem('refresh_token', response.payload.refresh);
       const jd = jwt_decode(sessionStorage.getItem('access_token') as string);
+      console.log(jd);
+      const user_id = jd.user_id;
+      sessionStorage.setItem('user_id', user_id);
       const nickname = jd.user_nickname;
       sessionStorage.setItem('user_nickname', nickname);
-
       // Dispatch the setAuthenticated action
       dispatch(setAuthenticated(true));
 
@@ -55,7 +57,6 @@ const handleSubmit = (e: React.FormEvent) => {
     }
   });
 };
-
   return (
     <Container>
       <Typography variant="h4" gutterBottom>

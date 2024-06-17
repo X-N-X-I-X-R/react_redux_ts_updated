@@ -35,21 +35,21 @@ const Navbar: React.FC<NavbarProps> = ({ nickname }) => {
               {nickname}
             </Typography>
           )}
-          <Button color="inherit">
-            <Link to="/about" style={{ color: 'white', textDecoration: 'none' }}>
-              About
-            </Link>
-          </Button>
-          <Button color="inherit">
+<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+  <Link to="/" style={{ color: '#F58549', textDecoration: 'none', fontWeight: 'bold', fontSize: '24px' }}>
+    Welcome to Connectify
+  </Link>
+</Typography>
+          {/* <Button color="inherit">
             <Link to="/contact" style={{ color: 'white', textDecoration: 'none' }}>
               Contact
             </Link>
-          </Button>
-          <Button color="inherit">
+          </Button> */}
+          {/* <Button color="inherit">
             <Link to="/login" style={{ color: 'white', textDecoration: 'none' }}>
               Login
             </Link>
-          </Button>
+          </Button> */}
         </Box>
       </Toolbar>
     </AppBar>

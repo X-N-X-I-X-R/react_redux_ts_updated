@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -10,11 +9,19 @@ import Contact from './pages/Contact';
 import Dashboard from './components/Dashboard';
 import Layout_app from './components/Layout_app';
 import Autpage from './pages/Autpage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/rootReducer';
+import { setInitialState } from './store/slicers/authSlice';
+import { useEffect } from 'react';
+import Chat from './pages/Chat';
 
 const App: React.FC = () => {
-const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setInitialState());
+  }, [dispatch]);
 
 
 
@@ -28,12 +35,14 @@ const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthentic
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/chat" element={<Chat />} />
           <Route path="*" element={<Navigate to="/homepage" />} />
+
         </Routes>
       </Layout_app>
     );
   } 
-
+if (!isAuthenticated) {
   return (
     <Layout_app>
       <Routes>
@@ -44,7 +53,8 @@ const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthentic
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Layout_app>
-  );
-} 
+  );    
+}
+}
 
 export default App;
