@@ -1,8 +1,8 @@
+// src/App.tsx
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Homepage from './components/Homepage';
-import Userprofile from './pages/Userprofile';
 import CheckEmail from './components/CheckEmail';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -14,6 +14,11 @@ import { RootState } from './store/rootReducer';
 import { setInitialState } from './store/slicers/authSlice';
 import { useEffect } from 'react';
 import Chat from './pages/Chat';
+import VideoChat from './pages/VideoChat';
+import React from 'react';
+import SecFilingsForm from './pages/SecFilingsForm';
+import LoadUserProfileData from './components/LoadUserProfileData';
+import LogoutButton from './components/LogoutButton';
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -23,38 +28,40 @@ const App: React.FC = () => {
     dispatch(setInitialState());
   }, [dispatch]);
 
-
-
-  if(isAuthenticated){  
+  if (isAuthenticated) {
     return (
       <Layout_app>
         <Routes>
           <Route path="/" element={<Navigate to="/homepage" />} />
+          <Route path="/UserProfile" element={<LoadUserProfileData />} />
           <Route path="/homepage" element={<Homepage />} />
-          <Route path="/userprofile" element={<Userprofile />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/chat" element={<Chat />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/videoChat" element={<VideoChat />} />
           <Route path="*" element={<Navigate to="/homepage" />} />
+           <Route path="/secFilings" element={<SecFilingsForm/>} />
+          <Route path="/logout" element={<LogoutButton/>} />
 
+           
         </Routes>
       </Layout_app>
     );
-  } 
-if (!isAuthenticated) {
-  return (
-    <Layout_app>
-      <Routes>
-        <Route path="/Autpage" element={<Autpage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/check-email" element={<CheckEmail />} />
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </Layout_app>
-  );    
-}
-}
+    
+  } else {
+    return (
+      <Layout_app>
+        <Routes>
+          <Route path="/Autpage" element={<Autpage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/check-email" element={<CheckEmail />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      </Layout_app>
+    );
+  }
+};
 
 export default App;

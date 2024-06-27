@@ -7,10 +7,12 @@ import ListItemText from '@mui/material/ListItemText';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
 import Chaticon from '@mui/icons-material/Chat';
+import Videocall from '@mui/icons-material/VideoCall';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from 'react-router-dom';
 import ButtonBase from '@mui/material/ButtonBase';
+import SeachIcon from '@mui/icons-material/Search';
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -28,10 +30,10 @@ const Sidebar: React.FC = () => {
       }}
     >
       <List>
-        <ButtonBase onClick={() => navigate('/userprofile')}>
+        <ButtonBase onClick={() => navigate('/UserProfile')}>
           <ListItem>
             <ListItemIcon><HomeIcon /></ListItemIcon>
-            <ListItemText primary="User Profile" />
+            <ListItemText primary="UserProfile" />
           </ListItem>
         </ButtonBase>
         <ButtonBase onClick={() => navigate('/about')}>
@@ -58,6 +60,19 @@ const Sidebar: React.FC = () => {
             <ListItemText primary="chat" />
           </ListItem>
         </ButtonBase>
+         <ButtonBase onClick={() => navigate('/videoChat')}>
+          <ListItem>
+            <ListItemIcon><Videocall /></ListItemIcon>
+            <ListItemText primary="videoChat" />
+          </ListItem>
+        </ButtonBase>
+                 <ButtonBase onClick={() => navigate('/secFilings')}>
+          <ListItem>
+            <ListItemIcon><SeachIcon/></ListItemIcon>
+            <ListItemText primary="secFiling" />
+          </ListItem>
+        </ButtonBase>
+        
       </List>
     </Drawer>
   );

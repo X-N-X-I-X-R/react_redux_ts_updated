@@ -4,9 +4,10 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { Button } from 'react-bootstrap';
+import LogoutButton from './LogoutButton';
 
 interface NavbarProps {
   nickname?: string;
@@ -40,11 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({ nickname }) => {
     Welcome to Connectify
   </Link>
 </Typography>
-          {/* <Button color="inherit">
-            <Link to="/contact" style={{ color: 'white', textDecoration: 'none' }}>
-              Contact
-            </Link>
-          </Button> */}
+         <LogoutButton />
           {/* <Button color="inherit">
             <Link to="/login" style={{ color: 'white', textDecoration: 'none' }}>
               Login

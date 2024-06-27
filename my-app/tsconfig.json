@@ -1,23 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "es5", // Updated from "ES2020" to "es5"
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"], // Updated
+    "module": "commonjs", // Updated from "ESNext" to "commonjs"
     "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node", // Updated from "bundler" to "node"
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-
+    "jsx": "react", // Updated from "react-jsx" to "react"
+    "esModuleInterop": true, // Added
+    "allowSyntheticDefaultImports": true, // Added
+    "noImplicitAny": false, // Added
+    "noUnusedLocals": false, // Updated from true to false
+    "noUnusedParameters": false, // Updated from true to false
+    "removeComments": true, // Added
+    "strictNullChecks": true, // Added
+    "preserveConstEnums": true, // Added
+    "sourceMap": true, // Added
+    "baseUrl": ".", // Added
+    "types": ["node"], // Added
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
   },
