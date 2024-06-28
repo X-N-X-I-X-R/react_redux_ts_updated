@@ -5,7 +5,7 @@ import { RootState } from '../store/rootReducer';
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, MenuItem, Typography, Select, InputLabel, FormControl, Snackbar, SelectChangeEvent } from '@mui/material';
 import moment from 'moment-timezone';
 import styled from '@emotion/styled';
-import { countries } from 'countries-list';
+import { countries, getEmojiFlag } from 'countries-list';
 
 type TCountryCode = keyof typeof countries;
 
@@ -104,7 +104,8 @@ const LoadUserProfileData: React.FC = () => {
           const currentDate = new Date().toISOString();
           const formattedDate = formatDate(currentDate);
           const countryName = countries[editedProfile.user_country as TCountryCode]?.name || 'Unknown';
-          setSnackbarMessage(`Your profile is updated as of ${formattedDate}. Country updated to ${countryName}.`);
+          const countryFlag = getEmojiFlag(editedProfile.user_country as TCountryCode);
+          setSnackbarMessage(`Your profile is updated as of ${formattedDate}. Country updated to ${countryName} ${countryFlag}.`);
         })
         .catch((error) => {
           setSnackbarMessage('Failed to update profile: ' + error.message);
