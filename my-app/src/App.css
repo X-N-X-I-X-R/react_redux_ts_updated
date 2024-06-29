@@ -3,8 +3,13 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
+ --main-font: 'cursor'; /* Define your main font here */
 
+}
+body {
+  font-family: 'cursor', sans-serif;
+  cursor: default;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -35,10 +40,14 @@
 
 .card {
   padding: 2em;
+    font-family: 'cursor', sans-serif;
+
 }
 
 .read-the-docs {
   color: #888;
+    font-family: 'cursor', sans-serif;
+
 }
 
 
@@ -46,6 +55,8 @@
 @media only screen and (min-width: 820px) {
     .form-container {
         width: 800px;
+          font-family: 'cursor', sans-serif;
+
     }
 }
 
@@ -62,6 +73,8 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+      font-family: 'cursor', sans-serif;
+
 }
 
 .footer {
@@ -70,6 +83,8 @@
     bottom: 0px;
     text-align: center;
     left: 0;
+      font-family: 'cursor', sans-serif;
+
 }
 
 
@@ -90,6 +105,8 @@
     transform: translateZ(0);
     -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
     animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+      font-family: 'cursor', sans-serif;
+
 
 }
 
@@ -173,5 +190,16 @@
     }
 }
 
+.logo1-image {
+  max-width: 50%; /* Ensures the image is responsive and fits its container */
+  height: auto; /* Maintains the aspect ratio of the image */ 
+   border-radius: 100px; 
+  box-shadow: 0 20px 50px rgb(85, 0, 255); 
+  margin: 20px 0; 
+}
 
+a, button {
+  cursor: pointer; /* Changes cursor to pointer when hovering over links and buttons */
+    font-family: 'cursor', sans-serif;
 
+}

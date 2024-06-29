@@ -4,12 +4,16 @@ body, html, #root {
   padding: 0;
   display: flex;
   flex-direction: column;
+   --main-font: 'cursor'; /* Define your main font here */
+  font-family: 'cursor', sans-serif;
 }
 
 main {
   flex-grow: 1;
   padding: 24px;
   overflow: auto; /* Add overflow auto to allow scrolling if content exceeds the height */
+    font-family: 'cursor', sans-serif;
+
 }
 
 /* Add CSS for Navbar and Sidebar */
@@ -19,6 +23,8 @@ main {
   width: 100%;
   z-index: 1;
   height: 64px; /* Adjust according to the height of your Navbar */
+    font-family: 'cursor', sans-serif;
+
 }
 
 .Sidebar {
@@ -28,6 +34,8 @@ main {
   height: calc(100% - 72px); /* Adjust according to the height of your Navbar */
   width: 240px; /* Adjust according to the width of your Sidebar */
   z-index: 2;
+    font-family: 'cursor', sans-serif;
+
 }
 
 /* Adjust main content to account for Navbar and Sidebar */
@@ -37,6 +45,8 @@ main {
   height: calc(100% - 72px);
   padding: 24px;
   overflow: auto;
+    font-family: 'cursor', sans-serif;
+
 }
 #chat-log {
   width: 80%;
@@ -46,6 +56,8 @@ main {
   overflow-y: scroll;
   background-color: #fff;
   margin-bottom: 20px;
+    font-family: 'cursor', sans-serif;
+
 }
 
 #chat-message-input {
@@ -54,6 +66,8 @@ main {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-right: 10px;
+    font-family: 'cursor', sans-serif;
+
 }
 
 #chat-message-submit {
@@ -63,8 +77,11 @@ main {
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
+    font-family: 'cursor', sans-serif;
+
 }
 
 #chat-message-submit:hover {
   background-color: #218838;
+  
 }

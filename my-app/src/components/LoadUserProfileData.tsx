@@ -3,9 +3,19 @@ import { useSelector, useDispatch } from '../store/hooks';
 import { fetchUserProfile, updateUserProfile, UserProfileInterface } from '../store/slicers/userProfileSlice';
 import { RootState } from '../store/rootReducer';
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, MenuItem, Typography, Select, InputLabel, FormControl, Snackbar, SelectChangeEvent } from '@mui/material';
-import moment from 'moment-timezone';
 import styled from '@emotion/styled';
 import { countries, getEmojiFlag } from 'countries-list';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type TCountryCode = keyof typeof countries;
 
@@ -35,14 +45,18 @@ const StyledButton = styled(Button)({
   padding: '10px 20px',
   margin: '5px',
   fontWeight: 'bold',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
 });
 
 const formatDate = (date: string | null | undefined) => {
   if (!date) return 'no data yet';
-  const datePart = moment.tz(date, 'Asia/Jerusalem').format('MMMM Do YYYY');
-  const timePart = moment.tz(date, 'Asia/Jerusalem').format('h:mm:ss A');
-  return `${datePart} at ${timePart}`;
+  const datePart = dayjs(date).tz('Asia/Jerusalem').format('MMMM D, YYYY');
+  const timePart = dayjs(date).tz('Asia/Jerusalem').format('h:mm:ss A');
+  return `${datePart}\n${timePart}`;
 };
+
 
 const LoadUserProfileData: React.FC = () => {
   const dispatch = useDispatch();
@@ -96,12 +110,25 @@ const LoadUserProfileData: React.FC = () => {
     });
   };
 
+  const handleDateChange = (date: Date | null, key: string) => {
+    setEditedProfile((prev) => {
+      if (!prev) return undefined;
+
+      const updatedProfile: UserProfileInterface = {
+        ...prev,
+        [key]: date ? dayjs(date).format('YYYY-MM-DD') : null,
+      };
+
+      return updatedProfile;
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editedProfile) {
       dispatch(updateUserProfile(editedProfile))
         .then(() => {
-          const currentDate = new Date().toISOString();
+          const currentDate = dayjs().toISOString();
           const formattedDate = formatDate(currentDate);
           const countryName = countries[editedProfile.user_country as TCountryCode]?.name || 'Unknown';
           const countryFlag = getEmojiFlag(editedProfile.user_country as TCountryCode);
@@ -138,14 +165,14 @@ const LoadUserProfileData: React.FC = () => {
           {editMode ? (
             <form onSubmit={handleSubmit}>
               {Object.entries(userProfile).map(([key, value]) => {
-                if (key !== 'user' && key !== 'active' && key !== 'user_image_container' && key !== 'user_profile_image' && key !== 'last_login' && key !== 'last_updated' && key !== 'user_register_date') {
+                if (key !== 'user' && key !== 'active' && key !== 'user_image_container' && key !== 'user_profile_image' && key !== 'last_login' && key !== 'last_updated' && key !== 'user_register_date' && key !== 'id') {
                   if (key === 'user_gender') {
                     return (
                       <FormControl key={key} fullWidth margin="normal">
                         <InputLabel>{key.replace(/user_/g, '').replace(/_/g, ' ').toUpperCase()}</InputLabel>
                         <Select
                           name={key}
-                          value={editedProfile ? editedProfile[key] : value || ' ' }
+                          value={editedProfile ? editedProfile[key] : value || ' '}
                           onChange={handleSelectChange}
                         >
                           <MenuItem value="M">Male</MenuItem>
@@ -165,11 +192,21 @@ const LoadUserProfileData: React.FC = () => {
                         >
                           {Object.keys(countries).map((countryCode) => (
                             <MenuItem key={countryCode} value={countryCode as TCountryCode}>
-                              {countries[countryCode as TCountryCode].name}
+                              {getEmojiFlag(countryCode as TCountryCode)} {countries[countryCode as TCountryCode].name}
                             </MenuItem>
                           ))}
                         </Select>
                       </FormControl>
+                    );
+                  } else if (key.includes('date') || key.includes('birth')) {
+                    return (
+                      <DatePicker
+                        key={key}
+                        selected={editedProfile && editedProfile[key] ? new Date(editedProfile[key] as string) : null}
+                        onChange={(date) => handleDateChange(date, key)}
+                        customInput={<TextField label={key.replace(/user_/g, '').replace(/_/g, ' ').toUpperCase()} fullWidth margin="normal" variant="outlined" />}
+                        dateFormat="yyyy-MM-dd"
+                      />
                     );
                   } else {
                     return (
@@ -192,10 +229,10 @@ const LoadUserProfileData: React.FC = () => {
               })}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
                 <StyledButton type="submit" variant="contained" color="primary">
-                  Save
+                  <SaveIcon /> Save
                 </StyledButton>
                 <StyledButton onClick={handleEditToggle} variant="contained" color="secondary">
-                  Cancel
+                  <CancelIcon /> Cancel
                 </StyledButton>
               </Box>
             </form>
@@ -203,7 +240,7 @@ const LoadUserProfileData: React.FC = () => {
             <>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 2 }}>
                 <StyledButton onClick={handleEditToggle} variant="contained" color="primary">
-                  Edit Profile
+                  <EditIcon /> Edit Profile
                 </StyledButton>
               </Box>
               <TableContainer component={Paper} sx={{ borderRadius: '10px', boxShadow: '0px 3px 6px rgba(0,0,0,0.1)' }}>
@@ -226,6 +263,10 @@ const LoadUserProfileData: React.FC = () => {
                               </a>
                             ) : key.includes('date') || key.includes('login') || key.includes('updated') ? (
                               formatDate(value)
+                            ) : key === 'user_country' ? (
+                              <>
+                                {getEmojiFlag(value as TCountryCode)} {countries[value as TCountryCode]?.name}
+                              </>
                             ) : (
                               value !== null && value !== undefined ? String(value) : 'no data yet'
                             )}

@@ -9,7 +9,7 @@ const LogoutButton = () => {
   const handleLogout = () => {
     dispatch(logout());
     // move to the login 
-    window.location.href = '/login';
+    window.location.href = '/Autpage';
   }
 
   return (

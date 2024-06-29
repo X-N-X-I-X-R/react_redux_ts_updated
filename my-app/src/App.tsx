@@ -41,14 +41,11 @@ const App: React.FC = () => {
           <Route path="/chat" element={<Chat />} />
           <Route path="/videoChat" element={<VideoChat />} />
           <Route path="*" element={<Navigate to="/homepage" />} />
-           <Route path="/secFilings" element={<SecFilingsForm/>} />
+          <Route path="/secFilings" element={<SecFilingsForm/>} />
           <Route path="/logout" element={<LogoutButton/>} />
-
-           
         </Routes>
       </Layout_app>
     );
-    
   } else {
     return (
       <Layout_app>
@@ -57,7 +54,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/check-email" element={<CheckEmail />} />
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/Autpage" />} />
         </Routes>
       </Layout_app>
     );
