@@ -13,6 +13,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from 'react-router-dom';
 import ButtonBase from '@mui/material/ButtonBase';
 import SeachIcon from '@mui/icons-material/Search';
+import ImageIcon from '@mui/icons-material/Image';
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -70,6 +71,13 @@ const Sidebar: React.FC = () => {
           <ListItem>
             <ListItemIcon><SeachIcon/></ListItemIcon>
             <ListItemText primary="secFiling" />
+          </ListItem>
+        </ButtonBase>
+                
+                 <ButtonBase onClick={() => navigate('/images')}>
+          <ListItem>
+            <ListItemIcon><ImageIcon/></ListItemIcon>
+            <ListItemText primary="images" />
           </ListItem>
         </ButtonBase>
         

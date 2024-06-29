@@ -39,38 +39,38 @@ const Login: React.FC = () => {
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const response = await dispatch(login({ username, password }));
+  e.preventDefault();
+  const response = await dispatch(login({ username, password }));
 
-    if (response.payload.access) {
-      sessionStorage.setItem('access_token', response.payload.access);
-      sessionStorage.setItem('refresh_token', response.payload.refresh);
+  if (response.payload.access) {
+    sessionStorage.setItem('access_token', response.payload.access);
+    sessionStorage.setItem('refresh_token', response.payload.refresh);
 
-      try {
-        const token = sessionStorage.getItem('access_token');
-        if (!token) throw new Error('Token not found');
+    try {
+      const token = sessionStorage.getItem('access_token');
+      if (!token) throw new Error('Token not found');
 
-        const decodedToken: DecodedToken = jwt_decode(token);
-        console.log(decodedToken);
+      const decodedToken: DecodedToken = jwt_decode(token);
+      console.log(decodedToken);
 
-        sessionStorage.setItem('user_id', decodedToken.user_id.toString());
-        sessionStorage.setItem('user_nickname', decodedToken.user_nickname);
+      sessionStorage.setItem('user_id', decodedToken.user_id.toString());
+      sessionStorage.setItem('user_nickname', decodedToken.user_nickname);
 
-        if (decodedToken && decodedToken.user_profile_id !== undefined) {
-          sessionStorage.setItem('user_Profile_id', decodedToken.user_profile_id.toString());
-        } else {
-          console.error('decodedToken or user_Profile_id is undefined');
-          // Handle the error appropriately
-        }
+      if (decodedToken && decodedToken.user_profile_id !== undefined) {
+        sessionStorage.setItem('user_Profile_id', decodedToken.user_profile_id.toString());
+      } else {
+        console.error('decodedToken or user_Profile_id is undefined');
+      }
 
-        // Dispatch the setAuthenticated action
-        dispatch(setAuthenticated(true));
-        navigate('/');
-      } catch (error: any) {  
-        console.error('Error decoding token:', error.message);  
-      } 
-    } 
+      dispatch(setAuthenticated(true));
+      navigate('/');
+    } catch (error: any) {
+      console.error('Error decoding token:', error.message);
+    }
   }
+};
+
+
 
   return (
     <Container>

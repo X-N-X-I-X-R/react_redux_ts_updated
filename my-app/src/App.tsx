@@ -19,6 +19,7 @@ import React from 'react';
 import SecFilingsForm from './pages/SecFilingsForm';
 import LoadUserProfileData from './components/LoadUserProfileData';
 import LogoutButton from './components/LogoutButton';
+import ImagesManager from './components/ImagesManager';
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -34,6 +35,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/homepage" />} />
           <Route path="/UserProfile" element={<LoadUserProfileData />} />
+            <Route path="/images" element={<ImagesManager/>} /> {/* Add ImagesManager route */}
+
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
