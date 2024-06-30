@@ -253,7 +253,7 @@ const LoadUserProfileData: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {Object.entries(userProfile).map(([key, value]) =>
-                      key !== 'user_image_container' && key !== 'user_profile_image' && key !== 'id' ? (
+                      key !== 'user_image_container' && key !== 'user_profile_image' && key !== 'active' && key !== 'id' ? (
                         <StyledTableRow key={key}>
                           <StyledTableCell>{key.replace(/user_/g, '').replace(/_/g, ' ').toUpperCase()}</StyledTableCell>
                           <StyledTableCell>

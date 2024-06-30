@@ -1,29 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { RootState } from '../store/rootReducer';
-import { Box, Button, Typography, TextField, IconButton, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { AddAPhoto, Delete, Person } from '@mui/icons-material';
-import styled from '@emotion/styled';
-import { fetchImages, deleteImage, uploadImage, setProfilePicture, ImagesInterface } from '../store/slicers/imagesSlice';
-import { useSelector, useDispatch } from '../store/hooks';
+import { Box, Typography, Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchImages, deleteImage, uploadImage, setProfilePicture, ImageInterface } from '../store/slicers/imagesSlice';
 import { fetchAlbums, createAlbum } from '../store/slicers/albumSlice';
-
-const ImageContainer = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  margin: '10px',
-  border: '1px solid #ccc',
-  padding: '10px',
-  borderRadius: '10px',
-  maxWidth: '200px',
-  '& img': {
-    maxWidth: '100%',
-    borderRadius: '10px',
-  },
-});
+import { AppDispatch } from '../store';
 
 const ImagesManager: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const images = useSelector((state: RootState) => state.images.images);
   const albums = useSelector((state: RootState) => state.albums.albums);
   const status = useSelector((state: RootState) => state.images.status);
@@ -45,13 +29,30 @@ const ImagesManager: React.FC = () => {
   };
 
   const handleUpload = () => {
-    if (selectedImage) {
-      dispatch(uploadImage({ image: selectedImage, subject, album: album === '' ? null : album }));
-      setSelectedImage(null);
-      setSubject('');
-      setAlbum('');
+  if (selectedImage) {
+    const formData = new FormData();
+    formData.append('user_image_container', selectedImage);
+    formData.append('image_subject', subject);
+    if (album !== '') {
+      formData.append('album', album.toString());
+    } else {
+      // Handle the case when no album is selected
+      alert("Please select an album.");
+      return;
     }
-  };
+
+    dispatch(uploadImage(formData))
+      .unwrap()
+      .then(() => {
+        setSelectedImage(null);
+        setSubject('');
+        setAlbum('');
+      })
+      .catch((error) => {
+        console.error('Failed to upload image:', error);
+      });
+  }
+};
 
   const handleDelete = (imageId: number) => {
     dispatch(deleteImage(imageId));
@@ -61,18 +62,7 @@ const ImagesManager: React.FC = () => {
     dispatch(setProfilePicture(imageId));
   };
 
-  const handleCreateAlbum = () => {
-    if (newAlbum.trim()) {
-      dispatch(createAlbum({ name: newAlbum }))
-        .unwrap()
-        .then(() => {
-          setNewAlbum('');
-        })
-        .catch((error: any) => {
-          console.error('Failed to create album:', error.detail || error);
-        });
-    }
-  };
+
 
   return (
     <Box>
@@ -95,21 +85,15 @@ const ImagesManager: React.FC = () => {
           >
             {albums.map((album) => (
               <MenuItem key={album.id} value={album.id}>
-                {album.name}
+                {album.title}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <TextField
-          label="New Album"
-          value={newAlbum}
-          onChange={(e) => setNewAlbum(e.target.value)}
-          margin="normal"
-        />
-        <Button variant="contained" color="primary" onClick={handleCreateAlbum}>
-          Create Album
-        </Button>
-        <Button variant="contained" component="label" startIcon={<AddAPhoto />}>
+     
+       
+
+        <Button variant="contained" component="label">
           Choose Image
           <input type="file" hidden onChange={handleImageChange} />
         </Button>
@@ -120,19 +104,19 @@ const ImagesManager: React.FC = () => {
       {status === 'loading' && <Typography>Loading...</Typography>}
       {error && <Typography color="error">{String(error)}</Typography>}
       <Box display="flex" flexWrap="wrap" justifyContent="center" marginTop="20px">
-        {images.map((image: ImagesInterface) => (
-          <ImageContainer key={image.id}>
-            <img src={image.user_profile_image} alt={image.image_subject} />
+        {images.map((image: ImageInterface) => (
+          <Box key={image.id} display="flex" flexDirection="column" alignItems="center" margin="10px">
+            <img src={image.user_image_container ?? undefined} alt={image.image_subject ?? ''} style={{ maxWidth: '200px', borderRadius: '10px' }} />
             <Typography>{image.image_subject}</Typography>
             <Box display="flex">
-              <IconButton onClick={() => handleDelete(image.id)} color="secondary">
-                <Delete />
-              </IconButton>
-              <IconButton onClick={() => handleSetProfilePicture(image.id)} color="primary">
-                <Person />
-              </IconButton>
+              <Button onClick={() => handleDelete(image.id)} color="secondary">
+                Delete
+              </Button>
+              <Button onClick={() => handleSetProfilePicture(image.id)} color="primary">
+                Set as Profile Picture
+              </Button>
             </Box>
-          </ImageContainer>
+          </Box>
         ))}
       </Box>
     </Box>

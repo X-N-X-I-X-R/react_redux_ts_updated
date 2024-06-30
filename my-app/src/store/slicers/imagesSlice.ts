@@ -1,15 +1,21 @@
+// src/store/slicers/imagesSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export interface ImagesInterface {
+export interface ImageInterface {
   id: number;
-  user_profile_image: string;
-  image_subject: string;
-  album: number | null;
+  user: number;
+  album: number;
+  user_image_container: string;
+  created_at: string;
+  image_subject: string | null;
+  is_profile_picture: boolean;
+  is_private_or_global: boolean;
+  title : string; 
 }
 
 interface ImagesState {
-  images: ImagesInterface[];
+  images: ImageInterface[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
@@ -26,7 +32,7 @@ const getAuthToken = () => {
   return token;
 };
 
-export const fetchImages = createAsyncThunk<ImagesInterface[], void, { rejectValue: ErrorResponse }>(
+export const fetchImages = createAsyncThunk<ImageInterface[], void, { rejectValue: ErrorResponse }>(
   'images/fetchImages',
   async (_, { rejectWithValue }) => {
     try {
@@ -43,17 +49,11 @@ export const fetchImages = createAsyncThunk<ImagesInterface[], void, { rejectVal
   }
 );
 
-export const uploadImage = createAsyncThunk<ImagesInterface, { image: File; subject: string; album: number | null }, { rejectValue: ErrorResponse }>(
+export const uploadImage = createAsyncThunk<ImageInterface, FormData, { rejectValue: ErrorResponse }>(
   'images/uploadImage',
-  async ({ image, subject, album }, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const formData = new FormData();
-      formData.append('image', image);
-      formData.append('subject', subject);
-      if (album !== null) {
-        formData.append('album', album.toString());
-      }
       const response = await axios.post('http://127.0.0.1:8000/api/images/', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -138,7 +138,7 @@ const imagesSlice = createSlice({
       })
       .addCase(deleteImage.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.images = state.images.filter((image) => image.id !== action.meta.arg);
+        state.images = state.images.filter(image => image.id !== action.meta.arg);
       })
       .addCase(deleteImage.rejected, (state, action) => {
         state.status = 'failed';
@@ -149,6 +149,14 @@ const imagesSlice = createSlice({
       })
       .addCase(setProfilePicture.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        const updatedImageId = action.meta.arg;
+        state.images.forEach(image => {
+          if (image.id === updatedImageId) {
+            image.is_profile_picture = true;
+          } else {
+            image.is_profile_picture = false;
+          }
+        });
       })
       .addCase(setProfilePicture.rejected, (state, action) => {
         state.status = 'failed';
@@ -158,6 +166,5 @@ const imagesSlice = createSlice({
 });
 
 export const { reducer: imagesReducer } = imagesSlice;
-
 
 export default imagesSlice.reducer;

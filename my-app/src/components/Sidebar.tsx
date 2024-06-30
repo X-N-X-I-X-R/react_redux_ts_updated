@@ -74,10 +74,10 @@ const Sidebar: React.FC = () => {
           </ListItem>
         </ButtonBase>
                 
-                 <ButtonBase onClick={() => navigate('/images')}>
+                 <ButtonBase onClick={() => navigate('/mediaPage')}>
           <ListItem>
             <ListItemIcon><ImageIcon/></ListItemIcon>
-            <ListItemText primary="images" />
+            <ListItemText primary="MediaPage" />
           </ListItem>
         </ButtonBase>
         

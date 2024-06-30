@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import exp from 'constants';
 
 export interface AlbumInterface {
   id: number;
-  name: string;
+  title: string;
   created_at: string;
+  is_private_or_global: boolean; // Ensure this is included if needed
 }
 
 interface AlbumsState {
@@ -43,12 +43,12 @@ export const fetchAlbums = createAsyncThunk<AlbumInterface[], void, { rejectValu
   }
 );
 
-export const createAlbum = createAsyncThunk<AlbumInterface, { name: string }, { rejectValue: ErrorResponse }>(
+export const createAlbum = createAsyncThunk<AlbumInterface, { title: string }, { rejectValue: ErrorResponse }>(
   'albums/createAlbum',
-  async ({ name }, { rejectWithValue }) => {
+  async ({ title }, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      const response = await axios.post('http://127.0.0.1:8000/api/albums/', { name }, {
+      const response = await axios.post('http://127.0.0.1:8000/api/albums/', { title }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

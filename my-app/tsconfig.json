@@ -1,31 +1,31 @@
 {
   "compilerOptions": {
-    "target": "es5", // Updated from "ES2020" to "es5"
+    "target": "es2015", // Updated from "es5" to "es2015"
     "useDefineForClassFields": true,
-    "lib": ["dom", "dom.iterable", "esnext"], // Updated
-    "module": "commonjs", // Updated from "ESNext" to "commonjs"
+    "lib": ["dom", "dom.iterable", "esnext"], 
+    "module": "commonjs", 
     "skipLibCheck": true,
-    "moduleResolution": "node", // Updated from "bundler" to "node"
+    "moduleResolution": "node", 
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react", // Updated from "react-jsx" to "react"
-    "esModuleInterop": true, // Added
-    "allowSyntheticDefaultImports": true, // Added
-    "noImplicitAny": false, // Added
-    "noUnusedLocals": false, // Updated from true to false
-    "noUnusedParameters": false, // Updated from true to false
-    "removeComments": true, // Added
-    "strictNullChecks": true, // Added
-    "preserveConstEnums": true, // Added
-    "sourceMap": true, // Added
-    "baseUrl": ".", // Added
-    "types": ["node"], // Added
-    /* Linting */
+    "jsx": "react", 
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "removeComments": true,
+    "strictNullChecks": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "baseUrl": ".", 
+    "types": ["node"],
     "strict": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true // Added
   },
   "include": ["src"],
   "exclude": ["node_modules"],
