@@ -1,12 +1,21 @@
-// imagesSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface ImagesInterface {
   id: number;
   user_profile_image: string;
-  user_image_container: string;
   image_subject: string;
+  album: number | null;
+}
+
+interface ImagesState {
+  images: ImagesInterface[];
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+}
+
+interface ErrorResponse {
+  detail: string;
 }
 
 const getAuthToken = () => {
@@ -17,58 +26,88 @@ const getAuthToken = () => {
   return token;
 };
 
-export const fetchImages = createAsyncThunk('images/fetchImages', async (_, { rejectWithValue }) => {
-  try {
-    const token = getAuthToken();
-    const response = await axios.get('http://127.0.0.1:8000/api/images/', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response.data);
+export const fetchImages = createAsyncThunk<ImagesInterface[], void, { rejectValue: ErrorResponse }>(
+  'images/fetchImages',
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const response = await axios.get('http://127.0.0.1:8000/api/images/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
   }
-});
+);
 
-export const uploadImage = createAsyncThunk('images/uploadImage', async ({ image, subject }: { image: File, subject: string }, { rejectWithValue }) => {
-  const formData = new FormData();
-  formData.append('user_profile_image', image);
-  formData.append('image_subject', subject);
-  try {
-    const token = getAuthToken();
-    const response = await axios.post('http://127.0.0.1:8000/api/images/', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response.data);
+export const uploadImage = createAsyncThunk<ImagesInterface, { image: File; subject: string; album: number | null }, { rejectValue: ErrorResponse }>(
+  'images/uploadImage',
+  async ({ image, subject, album }, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      const formData = new FormData();
+      formData.append('image', image);
+      formData.append('subject', subject);
+      if (album !== null) {
+        formData.append('album', album.toString());
+      }
+      const response = await axios.post('http://127.0.0.1:8000/api/images/', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
   }
-});
+);
 
-export const deleteImage = createAsyncThunk('images/deleteImage', async (imageId: number, { rejectWithValue }) => {
-  try {
-    const token = getAuthToken();
-    await axios.delete(`http://127.0.0.1:8000/api/images/${imageId}/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return imageId;
-  } catch (error: any) {
-    return rejectWithValue(error.response.data);
+export const deleteImage = createAsyncThunk<void, number, { rejectValue: ErrorResponse }>(
+  'images/deleteImage',
+  async (imageId, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      await axios.delete(`http://127.0.0.1:8000/api/images/${imageId}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
   }
-});
+);
+
+export const setProfilePicture = createAsyncThunk<void, number, { rejectValue: ErrorResponse }>(
+  'images/setProfilePicture',
+  async (imageId, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      await axios.post(`http://127.0.0.1:8000/api/images/${imageId}/set_profile_picture/`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+const initialState: ImagesState = {
+  images: [],
+  status: 'idle',
+  error: null,
+};
 
 const imagesSlice = createSlice({
   name: 'images',
-  initialState: {
-    images: [] as ImagesInterface[],
-    status: 'idle',
-    error: null as string | null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -81,7 +120,7 @@ const imagesSlice = createSlice({
       })
       .addCase(fetchImages.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Failed to fetch images';
+        state.error = action.payload?.detail || 'Failed to fetch images';
       })
       .addCase(uploadImage.pending, (state) => {
         state.status = 'loading';
@@ -92,20 +131,33 @@ const imagesSlice = createSlice({
       })
       .addCase(uploadImage.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Failed to upload image';
+        state.error = action.payload?.detail || 'Failed to upload image';
       })
       .addCase(deleteImage.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(deleteImage.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.images = state.images.filter((image) => image.id !== action.payload);
+        state.images = state.images.filter((image) => image.id !== action.meta.arg);
       })
       .addCase(deleteImage.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || 'Failed to delete image';
+        state.error = action.payload?.detail || 'Failed to delete image';
+      })
+      .addCase(setProfilePicture.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(setProfilePicture.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+      })
+      .addCase(setProfilePicture.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload?.detail || 'Failed to set profile picture';
       });
   },
 });
+
+export const { reducer: imagesReducer } = imagesSlice;
+
 
 export default imagesSlice.reducer;

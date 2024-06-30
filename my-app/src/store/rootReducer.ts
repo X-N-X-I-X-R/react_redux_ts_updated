@@ -5,6 +5,7 @@ import chatSlice from './slicers/chatSlice';
 import secFilingsReducer from './slicers/secFilingsSlice';
 import userProfileSlice from './slicers/userProfileSlice'; // Correct import name
 import imagesSlice from './slicers/imagesSlice';
+import albumSlice from './slicers/albumSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   secFilings: secFilingsReducer,
   userProfile: userProfileSlice, 
     images: imagesSlice,
+    albums:albumSlice,
 
 });
 

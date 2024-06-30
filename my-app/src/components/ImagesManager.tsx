@@ -1,11 +1,11 @@
-// src/components/ImagesManager.tsx
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/rootReducer';
-import { Box, Button, Typography, TextField, IconButton } from '@mui/material';
-import { AddAPhoto, Delete } from '@mui/icons-material';
+import { Box, Button, Typography, TextField, IconButton, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { AddAPhoto, Delete, Person } from '@mui/icons-material';
 import styled from '@emotion/styled';
-import { fetchImages, deleteImage, uploadImage, ImagesInterface } from '../store/slicers/imagesSlice';
+import { fetchImages, deleteImage, uploadImage, setProfilePicture, ImagesInterface } from '../store/slicers/imagesSlice';
+import { useSelector, useDispatch } from '../store/hooks';
+import { fetchAlbums, createAlbum } from '../store/slicers/albumSlice';
 
 const ImageContainer = styled(Box)({
   display: 'flex',
@@ -25,13 +25,17 @@ const ImageContainer = styled(Box)({
 const ImagesManager: React.FC = () => {
   const dispatch = useDispatch();
   const images = useSelector((state: RootState) => state.images.images);
+  const albums = useSelector((state: RootState) => state.albums.albums);
   const status = useSelector((state: RootState) => state.images.status);
   const error = useSelector((state: RootState) => state.images.error);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [subject, setSubject] = useState<string>('');
+  const [album, setAlbum] = useState<number | ''>('');
+  const [newAlbum, setNewAlbum] = useState<string>('');
 
   useEffect(() => {
     dispatch(fetchImages());
+    dispatch(fetchAlbums());
   }, [dispatch]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,14 +46,32 @@ const ImagesManager: React.FC = () => {
 
   const handleUpload = () => {
     if (selectedImage) {
-      dispatch(uploadImage({ image: selectedImage, subject }));
+      dispatch(uploadImage({ image: selectedImage, subject, album: album === '' ? null : album }));
       setSelectedImage(null);
       setSubject('');
+      setAlbum('');
     }
   };
 
   const handleDelete = (imageId: number) => {
     dispatch(deleteImage(imageId));
+  };
+
+  const handleSetProfilePicture = (imageId: number) => {
+    dispatch(setProfilePicture(imageId));
+  };
+
+  const handleCreateAlbum = () => {
+    if (newAlbum.trim()) {
+      dispatch(createAlbum({ name: newAlbum }))
+        .unwrap()
+        .then(() => {
+          setNewAlbum('');
+        })
+        .catch((error: any) => {
+          console.error('Failed to create album:', error.detail || error);
+        });
+    }
   };
 
   return (
@@ -64,6 +86,29 @@ const ImagesManager: React.FC = () => {
           onChange={(e) => setSubject(e.target.value)}
           margin="normal"
         />
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="album-select-label">Select Album</InputLabel>
+          <Select
+            labelId="album-select-label"
+            value={album}
+            onChange={(e) => setAlbum(e.target.value as number | '')}
+          >
+            {albums.map((album) => (
+              <MenuItem key={album.id} value={album.id}>
+                {album.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          label="New Album"
+          value={newAlbum}
+          onChange={(e) => setNewAlbum(e.target.value)}
+          margin="normal"
+        />
+        <Button variant="contained" color="primary" onClick={handleCreateAlbum}>
+          Create Album
+        </Button>
         <Button variant="contained" component="label" startIcon={<AddAPhoto />}>
           Choose Image
           <input type="file" hidden onChange={handleImageChange} />
@@ -79,9 +124,14 @@ const ImagesManager: React.FC = () => {
           <ImageContainer key={image.id}>
             <img src={image.user_profile_image} alt={image.image_subject} />
             <Typography>{image.image_subject}</Typography>
-            <IconButton onClick={() => handleDelete(image.id)} color="secondary">
-              <Delete />
-            </IconButton>
+            <Box display="flex">
+              <IconButton onClick={() => handleDelete(image.id)} color="secondary">
+                <Delete />
+              </IconButton>
+              <IconButton onClick={() => handleSetProfilePicture(image.id)} color="primary">
+                <Person />
+              </IconButton>
+            </Box>
           </ImageContainer>
         ))}
       </Box>

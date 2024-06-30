@@ -2,80 +2,73 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface UserProfileInterface {
-  last_updated: any;
+  last_updated: string | null | undefined;
   id: number;
   user_nickname: string;
+  user_bio: string;
+  user_birth_date: string;
   user_gender: string;
   user_country: string;
-  user_phone: string;
-  user_birth_date: string;
-  user_bio: string;
   user_website: string;
-  user_image_container: string;
-  user_profile_image: string;
 }
 
-export const setInitialState: {
-  profile: UserProfileInterface | undefined;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-} = {
-  profile: undefined,
-  status: 'idle',
-  error: null,
+interface ErrorResponse {
+  detail: string;
+}
+
+const getAuthToken = () => {
+  const token = sessionStorage.getItem('access_token');
+  if (!token) {
+    throw new Error('Token not found');
+  }
+  return token;
 };
 
-export const fetchUserProfile = createAsyncThunk(
+export const fetchUserProfile = createAsyncThunk<UserProfileInterface, number, { rejectValue: ErrorResponse }>(
   'userProfile/fetchUserProfile',
-  async (_, { rejectWithValue }) => {
-    const user_Profile_id = sessionStorage.getItem('user_Profile_id')
-    if (!user_Profile_id) {
-      console.error('User profile ID is null or not found in session storage.');
-      return rejectWithValue('User profile ID is null or not found in session storage.');
-    }
+  async (profileId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/profiles/${user_Profile_id}/`);
-      console.log(response.data);
+      const token = getAuthToken();
+      const response = await axios.get(`http://127.0.0.1:8000/api/profiles/${profileId}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
-      
     } catch (error: any) {
-      console.error('Error fetching user profile:', error.response.data);
+      if (error.response && error.response.status === 404) {
+        return rejectWithValue({ detail: 'Profile not found' });
+      }
       return rejectWithValue(error.response.data);
     }
   }
 );
 
-export const updateUserProfile = createAsyncThunk(
+
+export const updateUserProfile = createAsyncThunk<UserProfileInterface, UserProfileInterface, { rejectValue: ErrorResponse }>(
   'userProfile/updateUserProfile',
-  async (profile: UserProfileInterface, { rejectWithValue }) => {
-    const user_Profile_id = sessionStorage.getItem('user_Profile_id');
-    if (!user_Profile_id) {
-      console.error('User profile ID is null or not found in session storage.');
-      return rejectWithValue('User profile ID is null or not found in session storage.');
-    }
+  async (profile, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`http://127.0.0.1:8000/api/profiles/${user_Profile_id}/`, profile);
+      const token = getAuthToken();
+      const response = await axios.put(`http://127.0.0.1:8000/api/profiles/${profile.id}/`, profile, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
-      console.error('Error updating user profile:', error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
 );
-
-const initialState: {
-  profile: UserProfileInterface | {};
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-} = {
-  profile: {},
-  status: 'idle',
-  error: null,
-};
 
 const userProfileSlice = createSlice({
   name: 'userProfile',
-  initialState,
+  initialState: {
+    profile: null as UserProfileInterface | null,
+    status: 'idle',
+    error: null as string | null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -85,11 +78,10 @@ const userProfileSlice = createSlice({
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.profile = action.payload;
-        state.error = null;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message ?? 'Failed to fetch user profile';
+        state.error = action.payload ? action.payload.detail : 'Failed to fetch profile';
       })
       .addCase(updateUserProfile.pending, (state) => {
         state.status = 'loading';
@@ -97,11 +89,10 @@ const userProfileSlice = createSlice({
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.profile = action.payload;
-        state.error = null;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message ?? 'Failed to update user profile';
+        state.error = action.payload ? action.payload.detail : 'Failed to update profile';
       });
   },
 });

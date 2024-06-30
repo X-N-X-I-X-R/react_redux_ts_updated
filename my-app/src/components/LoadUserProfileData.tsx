@@ -57,7 +57,6 @@ const formatDate = (date: string | null | undefined) => {
   return `${datePart}\n${timePart}`;
 };
 
-
 const LoadUserProfileData: React.FC = () => {
   const dispatch = useDispatch();
   const userProfile = useSelector((state: RootState) => state.userProfile.profile) as UserProfileInterface | undefined;
@@ -70,7 +69,7 @@ const LoadUserProfileData: React.FC = () => {
   useEffect(() => {
     const user_Profile_id = sessionStorage.getItem('user_Profile_id');
     if (user_Profile_id && user_Profile_id !== 'null') {
-      dispatch(fetchUserProfile());
+      dispatch(fetchUserProfile(Number(user_Profile_id)));
     }
   }, [dispatch]);
 
@@ -96,7 +95,7 @@ const LoadUserProfileData: React.FC = () => {
     });
   };
 
-  const handleSelectChange = (e: SelectChangeEvent<TCountryCode>) => {
+  const handleSelectChange = (e: SelectChangeEvent<TCountryCode | string>) => {
     const { name, value } = e.target;
     setEditedProfile((prev) => {
       if (!prev) return undefined;
@@ -116,7 +115,7 @@ const LoadUserProfileData: React.FC = () => {
 
       const updatedProfile: UserProfileInterface = {
         ...prev,
-        [key]: date ? dayjs(date).format('YYYY-MM-DD') : null,
+        [key]: date ? dayjs(date).format('YYYY-MM-DD') : '',
       };
 
       return updatedProfile;
@@ -168,18 +167,19 @@ const LoadUserProfileData: React.FC = () => {
                 if (key !== 'user' && key !== 'active' && key !== 'user_image_container' && key !== 'user_profile_image' && key !== 'last_login' && key !== 'last_updated' && key !== 'user_register_date' && key !== 'id') {
                   if (key === 'user_gender') {
                     return (
-                      <FormControl key={key} fullWidth margin="normal">
-                        <InputLabel>{key.replace(/user_/g, '').replace(/_/g, ' ').toUpperCase()}</InputLabel>
-                        <Select
-                          name={key}
-                          value={editedProfile ? editedProfile[key] : value || ' '}
-                          onChange={handleSelectChange}
-                        >
-                          <MenuItem value="M">Male</MenuItem>
-                          <MenuItem value="F">Female</MenuItem>
-                          <MenuItem value="O">Other</MenuItem>
-                        </Select>
-                      </FormControl>
+                  <FormControl key={key} fullWidth margin="normal">
+  <InputLabel>{key.replace(/user_/g, '').replace(/_/g, ' ').toUpperCase()}</InputLabel>
+  <Select
+    name={key}
+    value={editedProfile && editedProfile[key] !== null ? (editedProfile[key] as TCountryCode | '') : ''}
+    onChange={handleSelectChange}
+  >
+    <MenuItem value="M">Male</MenuItem>
+    <MenuItem value="F">Female</MenuItem>
+    <MenuItem value="O">Other</MenuItem>
+  </Select>
+</FormControl>
+
                     );
                   } else if (key === 'user_country') {
                     return (
@@ -187,7 +187,7 @@ const LoadUserProfileData: React.FC = () => {
                         <InputLabel>{key.replace(/user_/g, '').replace(/_/g, ' ').toUpperCase()}</InputLabel>
                         <Select
                           name={key}
-                          value={editedProfile ? (editedProfile[key] as TCountryCode) : ''}
+                          value={editedProfile ? (editedProfile[key] as TCountryCode) ?? '' : ''}
                           onChange={handleSelectChange}
                         >
                           {Object.keys(countries).map((countryCode) => (
