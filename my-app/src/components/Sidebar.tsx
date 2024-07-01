@@ -1,21 +1,16 @@
 import React from 'react';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, ButtonBase } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import InfoIcon from '@mui/icons-material/Info';
-import Chaticon from '@mui/icons-material/Chat';
-import Videocall from '@mui/icons-material/VideoCall';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import LoginIcon from '@mui/icons-material/Login';
-import { useNavigate } from 'react-router-dom';
-import ButtonBase from '@mui/material/ButtonBase';
-import SeachIcon from '@mui/icons-material/Search';
+import ChatIcon from '@mui/icons-material/Chat';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import SearchIcon from '@mui/icons-material/Search';
 import ImageIcon from '@mui/icons-material/Image';
+import { useNavigate } from 'react-router-dom';
 
-const Sidebar: React.FC = () => {
+const Sidebar = () => {
   const navigate = useNavigate();
 
   return (
@@ -26,61 +21,116 @@ const Sidebar: React.FC = () => {
         '& .MuiDrawer-paper': {
           width: 240,
           boxSizing: 'border-box',
-          marginTop: 10,
+          marginTop: 8,
+          backgroundColor: '#000', // Drawer background to black
         },
       }}
     >
       <List>
         <ButtonBase onClick={() => navigate('/UserProfile')}>
-          <ListItem>
-            <ListItemIcon><HomeIcon /></ListItemIcon>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549', // Change background on hover
+            },
+            '.MuiListItemText-primary': {
+              color: 'white', // Text color to white
+            }
+          }}>
+            <ListItemIcon><HomeIcon style={{ color: 'white' }} /></ListItemIcon>
             <ListItemText primary="UserProfile" />
           </ListItem>
         </ButtonBase>
         <ButtonBase onClick={() => navigate('/about')}>
-          <ListItem>
-            <ListItemIcon><InfoIcon /></ListItemIcon>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549',
+            },
+            '.MuiListItemText-primary': {
+              color: 'white',
+            }
+          }}>
+            <ListItemIcon><InfoIcon style={{ color: 'white' }} /></ListItemIcon>
             <ListItemText primary="About" />
           </ListItem>
         </ButtonBase>
         <ButtonBase onClick={() => navigate('/contact')}>
-          <ListItem>
-            <ListItemIcon><ContactMailIcon /></ListItemIcon>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549',
+            },
+            '.MuiListItemText-primary': {
+              color: 'white',
+            }
+          }}>
+            <ListItemIcon><ContactMailIcon style={{ color: 'white' }} /></ListItemIcon>
             <ListItemText primary="Contact" />
           </ListItem>
         </ButtonBase>
         <ButtonBase onClick={() => navigate('/dashboard')}>
-          <ListItem>
-            <ListItemIcon><LoginIcon /></ListItemIcon>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549',
+            },
+            '.MuiListItemText-primary': {
+              color: 'white',
+            }
+          }}>
+            <ListItemIcon><LoginIcon style={{ color: 'white' }} /></ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
         </ButtonBase>
-                <ButtonBase onClick={() => navigate('/chat')}>
-          <ListItem>
-            <ListItemIcon><Chaticon /></ListItemIcon>
-            <ListItemText primary="chat" />
+        <ButtonBase onClick={() => navigate('/chat')}>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549',
+            },
+            '.MuiListItemText-primary': {
+              color: 'white',
+            }
+          }}>
+            <ListItemIcon><ChatIcon style={{ color: 'white' }} /></ListItemIcon>
+            <ListItemText primary="Chat" />
           </ListItem>
         </ButtonBase>
-         <ButtonBase onClick={() => navigate('/videoChat')}>
-          <ListItem>
-            <ListItemIcon><Videocall /></ListItemIcon>
-            <ListItemText primary="videoChat" />
+        <ButtonBase onClick={() => navigate('/videoChat')}>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549',
+            },
+            '.MuiListItemText-primary': {
+              color: 'white',
+            }
+          }}>
+            <ListItemIcon><VideoCallIcon style={{ color: 'white' }} /></ListItemIcon>
+            <ListItemText primary="Video Chat" />
           </ListItem>
         </ButtonBase>
-                 <ButtonBase onClick={() => navigate('/secFilings')}>
-          <ListItem>
-            <ListItemIcon><SeachIcon/></ListItemIcon>
-            <ListItemText primary="secFiling" />
+        <ButtonBase onClick={() => navigate('/secFilings')}>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549',
+            },
+            '.MuiListItemText-primary': {
+              color: 'white',
+            }
+          }}>
+            <ListItemIcon><SearchIcon style={{ color: 'white' }} /></ListItemIcon>
+            <ListItemText primary="SEC Filings" />
           </ListItem>
         </ButtonBase>
-                
-                 <ButtonBase onClick={() => navigate('/mediaPage')}>
-          <ListItem>
-            <ListItemIcon><ImageIcon/></ListItemIcon>
-            <ListItemText primary="MediaPage" />
+        <ButtonBase onClick={() => navigate('/mediaPage')}>
+          <ListItem sx={{
+            '&:hover': {
+              backgroundColor: '#F58549',
+            },
+            '.MuiListItemText-primary': {
+              color: 'white',
+            }
+          }}>
+            <ListItemIcon><ImageIcon style={{ color: 'white' }} /></ListItemIcon>
+            <ListItemText primary="Media Page" />
           </ListItem>
         </ButtonBase>
-        
       </List>
     </Drawer>
   );

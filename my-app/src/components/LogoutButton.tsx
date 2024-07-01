@@ -8,12 +8,12 @@ const LogoutButton = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    // move to the login 
+    // move to the login page
     window.location.href = '/Autpage';
   }
 
   return (
-    <Button variant="contained" color="primary" onClick={handleLogout}>
+    <Button variant="contained" onClick={handleLogout} style={{ backgroundColor: '#f58549' }}>
       Logout
     </Button>
   );

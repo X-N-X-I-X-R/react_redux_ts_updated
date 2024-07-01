@@ -15,8 +15,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ nickname }) => {
   return (
-    <AppBar position="fixed" className="Navbar" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Toolbar>
+<AppBar position="fixed" className="Navbar" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#000' }}>      <Toolbar>
         <IconButton
           edge="start"
           color="inherit"
