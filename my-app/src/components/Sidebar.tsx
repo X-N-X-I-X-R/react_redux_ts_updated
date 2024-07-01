@@ -23,6 +23,7 @@ const Sidebar = () => {
           boxSizing: 'border-box',
           marginTop: 8,
           backgroundColor: '#000', // Drawer background to black
+          
         },
       }}
     >
@@ -30,10 +31,12 @@ const Sidebar = () => {
         <ButtonBase onClick={() => navigate('/UserProfile')}>
           <ListItem sx={{
             '&:hover': {
-              backgroundColor: '#F58549', // Change background on hover
+              backgroundColor: '#F58549', 
+              fontFamily:'fantasy',// Change background on hover
             },
             '.MuiListItemText-primary': {
               color: 'white', // Text color to white
+              
             }
           }}>
             <ListItemIcon><HomeIcon style={{ color: 'white' }} /></ListItemIcon>

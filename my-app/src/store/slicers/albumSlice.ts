@@ -60,7 +60,23 @@ export const createAlbum = createAsyncThunk<AlbumInterface, { title: string }, {
   }
 );
 
-export const updateAlbum = createAsyncThunk<AlbumInterface, { id: number, title: string }, { rejectValue: ErrorResponse }>(
+export const deleteAlbum = createAsyncThunk<void, number, { rejectValue: ErrorResponse }>(
+  'albums/deleteAlbum',
+  async (albumId, { rejectWithValue }) => {
+    try {
+      const token = getAuthToken();
+      await axios.delete(`http://127.0.0.1:8000/api/albums/${albumId}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateAlbum = createAsyncThunk<AlbumInterface, { id: number; title: string }, { rejectValue: ErrorResponse }>(
   'albums/updateAlbum',
   async ({ id, title }, { rejectWithValue }) => {
     try {
@@ -71,23 +87,6 @@ export const updateAlbum = createAsyncThunk<AlbumInterface, { id: number, title:
         },
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-export const deleteAlbum = createAsyncThunk<number, number, { rejectValue: ErrorResponse }>(
-  'albums/deleteAlbum',
-  async (id, { rejectWithValue }) => {
-    try {
-      const token = getAuthToken();
-      await axios.delete(`http://127.0.0.1:8000/api/albums/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return id;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
@@ -128,12 +127,23 @@ const albumsSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload?.detail || 'Failed to create album';
       })
+      .addCase(deleteAlbum.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(deleteAlbum.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.albums = state.albums.filter((album) => album.id !== action.meta.arg);
+      })
+      .addCase(deleteAlbum.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload?.detail || 'Failed to delete album';
+      })
       .addCase(updateAlbum.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(updateAlbum.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        const index = state.albums.findIndex(album => album.id === action.payload.id);
+        const index = state.albums.findIndex((album) => album.id === action.payload.id);
         if (index !== -1) {
           state.albums[index] = action.payload;
         }
@@ -141,17 +151,6 @@ const albumsSlice = createSlice({
       .addCase(updateAlbum.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload?.detail || 'Failed to update album';
-      })
-      .addCase(deleteAlbum.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(deleteAlbum.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.albums = state.albums.filter(album => album.id !== action.payload);
-      })
-      .addCase(deleteAlbum.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload?.detail || 'Failed to delete album';
       });
   },
 });

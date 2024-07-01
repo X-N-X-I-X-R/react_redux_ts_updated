@@ -1,17 +1,12 @@
-// src/store/slicers/imagesSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface ImageInterface {
   id: number;
-  user: number;
-  album: number;
   user_image_container: string;
+  image_subject: string;
+  album: number;
   created_at: string;
-  image_subject: string | null;
-  is_profile_picture: boolean;
-  is_private_or_global: boolean;
-  title : string; 
 }
 
 interface ImagesState {
@@ -22,6 +17,7 @@ interface ImagesState {
 
 interface ErrorResponse {
   detail: string;
+  image_subject?: string[];
 }
 
 const getAuthToken = () => {
@@ -57,7 +53,6 @@ export const uploadImage = createAsyncThunk<ImageInterface, FormData, { rejectVa
       const response = await axios.post('http://127.0.0.1:8000/api/images/', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
         },
       });
       return response.data;
@@ -88,7 +83,7 @@ export const setProfilePicture = createAsyncThunk<void, number, { rejectValue: E
   async (imageId, { rejectWithValue }) => {
     try {
       const token = getAuthToken();
-      await axios.post(`http://127.0.0.1:8000/api/images/${imageId}/set_profile_picture/`, {}, {
+      await axios.patch(`http://127.0.0.1:8000/api/images/${imageId}/set_profile_picture/`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -131,36 +126,28 @@ const imagesSlice = createSlice({
       })
       .addCase(uploadImage.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload?.detail || 'Failed to upload image';
+        state.error = action.payload?.detail || '';
       })
       .addCase(deleteImage.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(deleteImage.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.images = state.images.filter(image => image.id !== action.meta.arg);
+        state.images = state.images.filter((image) => image.id !== action.meta.arg);
       })
       .addCase(deleteImage.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload?.detail || 'Failed to delete image';
+        state.error = action.payload?.detail || '';
       })
       .addCase(setProfilePicture.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(setProfilePicture.fulfilled, (state, action) => {
+      .addCase(setProfilePicture.fulfilled, (state) => {
         state.status = 'succeeded';
-        const updatedImageId = action.meta.arg;
-        state.images.forEach(image => {
-          if (image.id === updatedImageId) {
-            image.is_profile_picture = true;
-          } else {
-            image.is_profile_picture = false;
-          }
-        });
       })
       .addCase(setProfilePicture.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload?.detail || 'Failed to set profile picture';
+        state.error = action.payload?.detail || '';
       });
   },
 });

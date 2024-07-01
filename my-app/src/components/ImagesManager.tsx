@@ -10,6 +10,8 @@ import UploadIcon from '@mui/icons-material/CloudUpload';
 
 const ImagesManager: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+    const [isImageAdded, setIsImageAdded] = useState(false);
+
   const albums = useSelector((state: RootState) => state.albums.albums);
   const status = useSelector((state: RootState) => state.images.status);
   const error = useSelector((state: RootState) => state.images.error);
@@ -30,7 +32,16 @@ const ImagesManager: React.FC = () => {
       setSelectedImage(e.target.files[0]);
     }
   };
-
+  const handleImageAddition = (event) => {
+    // Assuming the event is the file input change event
+    const files = event.target.files;
+    if (files.length > 0) {
+      setIsImageAdded(true);
+      // Additional logic to handle the file upload can be added here
+    } else {
+      setIsImageAdded(false);
+    }
+  };
   const handleUpload = () => {
     if (selectedImage) {
       const formData = new FormData();
@@ -71,13 +82,17 @@ const ImagesManager: React.FC = () => {
     <Box
       sx={{
         backgroundColor: '',
-        boxShadow: '0px 4px 20px rgba(74, 144, 226, 0.3)',
+        boxShadow: '0px 0px 50px rgba(74, 144, 226, 0.3)',
         padding: 4,
         borderRadius: 2,
         color: 'white',
       }}
     >
-      <Typography variant="h6" gutterBottom sx={{ color: '#f58549', fontWeight: 'bold', textShadow: '1px 1px 1px #000' }}>
+      <Typography variant="h6" gutterBottom sx={{
+              color: '#000',
+          fontWeight: 'bold',
+          textShadow: '1px 1px 1px #F000',
+          fontFamily:''}}>
         Manage Your Images
       </Typography>
       <Box display="flex" flexDirection="column" alignItems="center">
@@ -87,20 +102,20 @@ const ImagesManager: React.FC = () => {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             margin="normal"
-            InputLabelProps={{ style: { color: '#f58549' } }}
+            InputLabelProps={{ style: { color: '#000' } }}
             InputProps={{
-              style: { color: 'white' },
+              style: { color: 'black' }, // Set text color to black
               sx: {
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': {
-                    borderColor: '#f58549',
+                    borderColor: '#000',
                     borderWidth: 2,
                   },
                   '&:hover fieldset': {
-                    borderColor: '#f58549',
+                    borderColor: '#000',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: '#f58549',
+                    borderColor: '#000',
                   },
                 },
               },
@@ -109,7 +124,7 @@ const ImagesManager: React.FC = () => {
           />
         </Tooltip>
         <FormControl fullWidth margin="normal" sx={{ marginBottom: 2, width: '300px' }}>
-          <InputLabel id="album-select-label" sx={{ color: '#f58549', textShadow: '1px 1px 1px #000' }}>Select Album</InputLabel>
+          <InputLabel id="album-select-label" sx={{ color: '#000', textShadow: '1px 1px 1px #000' }}>Select Album</InputLabel>
           <Tooltip title="Select an album">
             <Select
               labelId="album-select-label"
@@ -118,8 +133,8 @@ const ImagesManager: React.FC = () => {
               sx={{
                 '& .MuiSelect-icon': { color: 'white' },
                 '& .MuiInputBase-root': { color: 'white' },
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#f58549' },
-                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#f58549' },
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#000' },
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#000' },
                 textShadow: '1px 1px 1px #000',
               }}
             >
@@ -136,8 +151,8 @@ const ImagesManager: React.FC = () => {
             variant="contained"
             component="label"
             sx={{
-              backgroundColor: '#f58549',
-              '&:hover': { backgroundColor: '#f58549' },
+              backgroundColor: '#000',
+              '&:hover': { backgroundColor: '#000' },
               color: 'white',
               marginBottom: 2,
               textShadow: '1px 1px 1px #000',
@@ -156,8 +171,8 @@ const ImagesManager: React.FC = () => {
               onClick={handleUpload}
               disabled={!selectedImage}
               sx={{
-                backgroundColor: '#f58549',
-                '&:hover': { backgroundColor: '#f58549' },
+                backgroundColor: '#000',
+                '&:hover': { backgroundColor: '#000' },
                 color: 'white',
                 marginBottom: 2,
                 textShadow: '1px 1px 1px #000',
@@ -189,4 +204,3 @@ const ImagesManager: React.FC = () => {
 };
 
 export default ImagesManager;
-

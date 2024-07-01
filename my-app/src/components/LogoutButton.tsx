@@ -13,7 +13,7 @@ const LogoutButton = () => {
   }
 
   return (
-    <Button variant="contained" onClick={handleLogout} style={{ backgroundColor: '#f58549' }}>
+    <Button variant="contained" onClick={handleLogout} style={{ backgroundColor: '#010101' ,fontFamily:'fantasy'}}>
       Logout
     </Button>
   );

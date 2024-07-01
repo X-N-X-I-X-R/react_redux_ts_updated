@@ -24,9 +24,9 @@ const Navbar: React.FC<NavbarProps> = ({ nickname }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-            Dashboard
+        <Typography variant="h4" component="div" sx={{ flexGrow: 1, }}>
+          <Link to="/" style={{ color: 'white', textDecoration: 'none',fontFamily:'fantasy' }}>
+            HIPPOPOTAMUS
           </Link>
         </Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
@@ -36,8 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ nickname }) => {
             </Typography>
           )}
 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-  <Link to="/" style={{ color: '#F58549', textDecoration: 'none', fontWeight: 'bold', fontSize: '24px' }}>
-    Welcome to Connectify
+  <Link to="/" style={{ color: '#F58549', textDecoration: 'none', fontWeight: 'bold', fontSize: '24px' ,fontFamily:'fantasy'}}>
   </Link>
 </Typography>
          <LogoutButton />
