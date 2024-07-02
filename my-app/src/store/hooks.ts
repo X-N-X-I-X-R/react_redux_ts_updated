@@ -1,9 +1,7 @@
-// store/hooks.ts
+// hooks.ts
 import { TypedUseSelectorHook, useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
-import { RootState } from './rootReducer';
-import { AppDispatch } from '.';
+import type { RootState, AppDispatch } from './index';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
-export const useDispatch = () => useReduxDispatch<AppDispatch>();
+export const useDispatch: () => AppDispatch = useReduxDispatch;
 export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
-

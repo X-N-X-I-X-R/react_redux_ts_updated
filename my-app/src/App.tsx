@@ -19,6 +19,7 @@ import SecFilingsForm from './pages/SecFilingsForm';
 import LoadUserProfileData from './components/LoadUserProfileData';
 import LogoutButton from './components/LogoutButton';
 import MediaPage from './pages/MediaPage';
+import WebSocketComponent from './components/WebSocketComponent';
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -39,11 +40,12 @@ const App: React.FC = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/*" element={<Chat />} /> {/* הוספנו * בסוף הנתיב */}
           <Route path="/videoChat" element={<VideoChat />} />
           <Route path="/secFilings" element={<SecFilingsForm />} />
           <Route path="/logout" element={<LogoutButton />} />
           <Route path="*" element={<Navigate to="/homepage" />} />
+
         </Routes>
       </Layout_app>
     );
